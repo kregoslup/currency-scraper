@@ -8,6 +8,6 @@ class Currency(models.Model):
 
 class ExchangeRate(models.Model):
     rate = models.DecimalField(null=False, blank=False, decimal_places=4, max_digits=5)
-    from_curr = models.ForeignKey(Currency, on_delete=models.PROTECT, related_name='from_rates')
-    to_curr = models.ForeignKey(Currency, on_delete=models.PROTECT, related_name='to_rates')
+    base = models.ForeignKey(Currency, on_delete=models.PROTECT, related_name='base_rates')
+    target = models.ForeignKey(Currency, on_delete=models.PROTECT, related_name='target_rates')
     date = models.DateTimeField(null=False, blank=False)
