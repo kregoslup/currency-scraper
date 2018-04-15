@@ -3,6 +3,8 @@ import urllib.parse
 import requests
 from bs4 import BeautifulSoup
 
+from project.apps.scraper.tasks import populate_from_scraper
+
 BASE_ADDRESS = 'https://www.ecb.europa.eu/'
 EXCHANGE_RATES_RSS_HOME_ADDRESS = 'home/html/rss.en.html'
 
@@ -28,7 +30,7 @@ def _get_exchange_rate(address):
 
 
 def _parse_exchange_rates(payload):
-    soup = BeautifulSoup(payload)
+    soup = BeautifulSoup(payload, "html.parser")
     rates = soup.find_all('item')
 
     result = []
@@ -59,4 +61,4 @@ def scrape():
             )
         ))
 
-    return result
+    populate_from_scraper(result)
