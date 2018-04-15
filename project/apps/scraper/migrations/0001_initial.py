@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             name='Currency',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('code', models.CharField(max_length=3)),
+                ('code', models.CharField(max_length=3, unique=True)),
                 ('name', models.CharField(blank=True, max_length=255, null=True)),
             ],
         ),
@@ -29,5 +29,9 @@ class Migration(migrations.Migration):
                 ('base', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='base_rates', to='scraper.Currency')),
                 ('target', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='target_rates', to='scraper.Currency')),
             ],
+        ),
+        migrations.AlterUniqueTogether(
+            name='exchangerate',
+            unique_together={('rate', 'target', 'date')},
         ),
     ]
