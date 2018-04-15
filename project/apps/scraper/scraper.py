@@ -9,7 +9,11 @@ EXCHANGE_RATES_RSS_HOME_ADDRESS = 'home/html/rss.en.html'
 
 def _get_exchange_rates_links(address):
     response = requests.get(address)
-    soup = BeautifulSoup(response.text, 'html.parser')
+    yield from _parse_exchange_links(response.text)
+
+
+def _parse_exchange_links(payload):
+    soup = BeautifulSoup(payload, 'html.parser')
     links = soup.find_all('a', href=lambda x: x and x.startswith('/rss/fxref-'))
     for link in links:
         yield link.get('href')
@@ -17,7 +21,11 @@ def _get_exchange_rates_links(address):
 
 def _get_exchange_rate(address):
     response = requests.get(address)
-    soup = BeautifulSoup(response.text)
+    return _parse_exchange_rates(response.text)
+
+
+def _parse_exchange_rates(payload):
+    soup = BeautifulSoup(payload)
     rates = soup.find_all('item')
 
     result = []
