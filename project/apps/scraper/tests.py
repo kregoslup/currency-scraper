@@ -3,7 +3,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from project.apps.scraper.models import ExchangeRate
+from project.apps.scraper.models import ExchangeRate, Currency
 
 
 class ExchangeRatesViewTest(APITestCase):
@@ -96,3 +96,34 @@ class TestParseExchangeRates(TestCase):
         self.assertEqual(rates['target'], expected['target'])
         self.assertEqual(rates['date'], expected['date'])
         self.assertEqual(rates['rate'], expected['rate'])
+
+
+class TestPopulateFromScraper(TestCase):
+    def test_populate(self):
+        scraped = [
+            {
+                'date': '2018-04-13T14:15:00+01:00',
+                'rate': '1.2317',
+                'base': 'EUR',
+                'target': 'USD'
+            },
+            {
+                'date': '2018-04-13T14:15:00+01:00',
+                'rate': '1.2317',
+                'base': 'EUR',
+                'target': 'USD'
+            },
+            {
+                'date': '2018-04-13T14:15:00+01:00',
+                'rate': '1.2317',
+                'base': 'EUR',
+                'target': 'PLN'
+            }
+        ]
+
+        from project.apps.scraper.tasks import populate_from_scraper
+
+        populate_from_scraper(scraped)
+
+        self.assertEqual(Currency.objects.count(), 3)
+        self.assertEqual(ExchangeRate.objects.count(), 2)
