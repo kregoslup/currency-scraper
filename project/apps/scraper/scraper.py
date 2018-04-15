@@ -1,0 +1,48 @@
+import urllib.parse
+
+import requests
+from bs4 import BeautifulSoup
+
+BASE_ADDRESS = 'https://www.ecb.europa.eu/'
+EXCHANGE_RATES_RSS_HOME_ADDRESS = 'home/html/rss.en.html'
+
+
+def _get_exchange_rates_links(address):
+    response = requests.get(address)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    links = soup.find_all('a', href=lambda x: x and x.startswith('/rss/fxref-'))
+    for link in links:
+        yield link.get('href')
+
+
+def _get_exchange_rate(address):
+    response = requests.get(address)
+    soup = BeautifulSoup(response.text)
+    rates = soup.find_all('item')
+
+    result = []
+    for rate in rates:
+        result.append({
+            'date': rate.find('dc:date').string,
+            'rate': rate.find('cb:value').string,
+            'base': rate.find('cb:basecurrency').string,
+            'target': rate.find('cb:targetcurrency').string
+        })
+
+    return result
+
+
+def scrape():
+    result = []
+    for link in _get_exchange_rates_links(urllib.parse.urljoin(
+            BASE_ADDRESS,
+            EXCHANGE_RATES_RSS_HOME_ADDRESS
+    )):
+        result.extend(_get_exchange_rate(
+            urllib.parse.urljoin(
+                BASE_ADDRESS,
+                link
+            )
+        ))
+
+    return result
