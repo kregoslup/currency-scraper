@@ -1,0 +1,22 @@
+[
+  {
+    "model": "scraper.ExchangeRate",
+    "pk": 1,
+    "fields": {
+      "rate": "1.2367",
+      "base": 1,
+      "target": 2,
+      "date": "2018-04-13T14:15:00+01:00"
+    }
+  },
+  {
+    "model": "scraper.ExchangeRate",
+    "pk": 2,
+    "fields": {
+      "rate": "1.2368",
+      "base": 1,
+      "target": 2,
+      "date": "2018-04-13T16:15:00+01:00"
+    }
+  }
+]
