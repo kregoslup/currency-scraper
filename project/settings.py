@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'rest_framework',
+    'django_cron',
     'project.apps.scraper',
 ]
 
@@ -124,3 +125,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# CRON
+
+CRON_CLASSES = [
+    "project.apps.scraper.crons.ExchangeRatesCron",
+]
+
+CRON_MINUTES_INTERVAL = 120
