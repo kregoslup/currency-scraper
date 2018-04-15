@@ -16,7 +16,10 @@ def _parse_exchange_links(payload):
     soup = BeautifulSoup(payload, 'html.parser')
     links = soup.find_all('a', href=lambda x: x and x.startswith('/rss/fxref-'))
     for link in links:
-        yield link.get('href')
+        if link:
+            yield link.get('href')
+        else:
+            continue
 
 
 def _get_exchange_rate(address):
@@ -30,12 +33,15 @@ def _parse_exchange_rates(payload):
 
     result = []
     for rate in rates:
-        result.append({
-            'date': rate.find('dc:date').string,
-            'rate': rate.find('cb:value').string,
-            'base': rate.find('cb:basecurrency').string,
-            'target': rate.find('cb:targetcurrency').string
-        })
+        try:
+            result.append({
+                'date': rate.find('dc:date').string,
+                'rate': rate.find('cb:value').string,
+                'base': rate.find('cb:basecurrency').string,
+                'target': rate.find('cb:targetcurrency').string
+            })
+        except AttributeError:
+            continue
 
     return result
 
