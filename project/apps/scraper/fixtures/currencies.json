@@ -1,0 +1,18 @@
+[
+  {
+    "model": "scraper.Currency",
+    "pk": 1,
+    "fields": {
+      "code": "EUR",
+      "name": "Euro"
+    }
+  },
+  {
+    "model": "scraper.Currency",
+    "pk": 2,
+    "fields": {
+      "code": "PLN",
+      "name": "Złoty"
+    }
+  }
+]
